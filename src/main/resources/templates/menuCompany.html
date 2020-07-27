@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workglee</title>
+    <link rel="stylesheet" type="text/css" href="styleCompany.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script language="JavaScript">
+
+       function addO() {
+            var formData = {};
+            formData['titulo'] = $('#titulo').val();
+            formData['salario'] = $('#salario').val();
+            formData['ubicacion'] = $('#ubicacion').val();
+            formData['descripcion'] = $('#descripcion').val();
+            formData['dateLimit'] = $('#dateLimit').val();
+            if(document.getElementById('visibilidad').checked){
+              formData['visibilidad'] = '1';
+            }
+            else {
+                formData['visibilidad'] = '0';
+            }
+            var url = window.location.href;
+            var url = new URL(url);
+            var c = url.searchParams.get("compy_id");
+            var x =  'http://localhost:8080/companies/' + c;
+            formData['company'] = x;
+
+             $.ajax({
+                type: "POST",
+                url: 'http://localhost:8080/ofertas/',
+                dataType: 'json',
+                async: false,
+                // El objeto hay que convertirlo a texto
+                data: JSON.stringify(formData),
+                contentType: 'application/json'
+
+            });
+            var url = window.location.href;
+            var url = new URL(url);
+            var c = url.searchParams.get("compy_id");
+            location.href = "menuC?compy_id="+c;
+
+
+
+        }
+
+
+
+        function getOfertas() {
+
+            var url = window.location.href;
+            var url = new URL(url);
+            var c = url.searchParams.get("compy_id");
+            // Llamada para obtener JSON con peliculas
+
+            $.ajax({
+                url: "http://localhost:8080/companies/"+c+"/ofertas/"
+            }).then(function(data) {
+                // Procesado de las películas recibidas
+                $('#result').empty();
+                // Cada pelicula corresponde a una iteración del $.each siguiente
+                $.each(data._embedded.ofertas, function (index, value) {
+                    // Para cada pelicula se obtienen los datos de su director con otra llamada.
+                    // La dirección de la llamada al director está en la propia película: _links.director.href
+                          var urlO = value['_links']['self'].href;
+
+                          var n = urlO[urlO.length -1];
+                          if(urlO[urlO.length-3] == "/"){
+                                n = urlO.substr(urlO.length -2)
+                          }
+
+                          var b = b + n;
+
+                          if (value['visibilidad'] == 1){
+                          var vis = 'Sí';};
+                          if (value['visibilidad'] == 0){
+                          var vis = 'No';};
+
+                          $('#result').append('<tr><td>'+value['titulo']+'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+'</td><td>'+value['descripcion']+
+                          '</td><td>'+value['dateLimit'].slice(0,10)+'</td><td>'+vis+'</td><td><button  id='+n+' onclick="modificarOfertas()" type="button">E</button></td><td><button id='+n+' name=b onclick="eliminarOfertas()" type="button">B</button></td><td><button id='+n+' onclick="verInscritos()" data-toggle="modal" data-target="#myModal" type="button">Ver</button></td></tr>' );
+
+
+                });
+            });
+        }
+    var o;
+            function modificarOfertas() {
+
+            document.getElementById('todasOfertas').style.display = 'none';
+            document.getElementById('addmodificar').style.display = 'block';
+
+            o = event.srcElement.id;
+            $.ajax({
+                 url: 'http://localhost:8080/ofertas/' + o,
+            }).then(function(data) {
+                 document.modificar.titulom.value = data.titulo;
+                 document.modificar.salariom.value = data.salario;
+                 document.modificar.ubicacionm.value = data.ubicacion;
+                 document.modificar.visibilidadm.checked = data.visibilidad;
+                 document.modificar.descripcionm.value = data.descripcion;
+                 document.modificar.dateLimitm.value = data.dateLimit.slice(0,10);
+            });
+
+       }
+
+
+       function verInscritos() {
+
+            o = event.srcElement.id;
+
+            $.ajax({
+                 url: 'http://localhost:8080/ofertas/'+o+'/registro'
+
+            }).then(function(data) {
+
+
+                $.each(data._embedded.registro, function (index, value) {
+
+                    $("#myModal .modal-body").append("-" + value['_embedded']['empleado'].nombre + " " + value['_embedded']['empleado'].apellidos
+                    + " " + value['_embedded']['empleado'].provincia + " " + value['_embedded']['empleado'].ciudad +
+                     + " " + value['_embedded']['empleado'].nacimiento.slice(0,10) +  "<br/>");
+
+
+                });
+
+            });
+
+       }
+
+
+
+
+       function modificarOfertas2(){
+             var formData = {};
+            formData['titulo'] = $('#titulom').val();
+            formData['salario'] = $('#salariom').val();
+            formData['ubicacion'] = $('#ubicacionm').val();
+            formData['descripcion'] = $('#descripcionm').val();
+            formData['dateLimit'] = $('#dateLimitm').val();
+            if(document.getElementById('visibilidadm').checked){
+              formData['visibilidad'] = '1';
+            }
+            else {
+                formData['visibilidad'] = '0';
+            }
+            $.ajax({
+                type: "PUT",
+                url: 'http://localhost:8080/ofertas/' + o,
+                dataType: 'json',
+                async: false,
+                // El objeto hay que convertirlo a texto
+                data: JSON.stringify(formData),
+                contentType: 'application/json'
+
+            });
+                var url = window.location.href;
+                var url = new URL(url);
+                var c = url.searchParams.get("compy_id");
+                location.href = "menuC?compy_id=" + c;
+
+       }
+
+
+        function eliminarOfertas(n) {
+            var mensaje;
+            var opcion = confirm("Desea borrar la oferta");
+            if (opcion == true) {
+                $.ajax({
+                url: 'http://localhost:8080/ofertas/' + event.srcElement.id,
+                type: 'DELETE',
+                success: function(result) {
+                 // Do something with the result
+                  }
+                });
+                var url = window.location.href;
+                var url = new URL(url);
+                var c = url.searchParams.get("compy_id");
+                location.href = "menuC?compy_id=" + c;
+
+            }
+
+
+
+    }
+   function back(){
+            document.getElementById('todasOfertas').style.display = 'block';
+            document.getElementById('addmodificar').style.display = 'none';
+   }
+
+ function sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("todasOfertasTable");
+      switching = true;
+      dir = "asc";
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount ++;
+        } else {
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+$(document).ready(function(){
+   getOfertas();
+});
+
+    </script>
+
+
+
+
+</head>
+<body>
+
+
+<div class="topnav">
+    <a href="#">Inicio</a>
+    <a href="#">Ajustes</a>
+    <a id="bienvenido">Compañía</a>
+</div>
+
+<div class="content">
+
+    <div id="botonesBusqueda">
+        <a id="ver" href="javascript:getOfertas();" title="Ver todas">Ver todas las ofertas</a>
+    </div>
+
+<div id="todasOfertas">
+
+    <table id="todasOfertasTable">
+        <thead>
+            <th onclick="sortTable(0)">Titulo</th>
+            <th onclick="sortTable(1)">Salario</th>
+            <th onclick="sortTable(2)">Ubicacion</th>
+            <th onclick="sortTable(3)">Descripcion</th>
+            <th onclick="sortTable(4)">Fecha limite</th>
+            <th onclick="sortTable(5)">Visible</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+            <th>Ver inscritos</th>
+        </thead>
+        <tbody id="result">
+        </tbody>
+    </table>
+
+</div>
+
+
+
+<div id="addmodificar"  style="display: none">
+
+    <button type="button" onclick="back()" class="previous">&laquo;</button>
+    <h3 align="center">Modificar oferta</h3>
+    <form id="modificar" name="modificar" action="javascript:modificarOfertas2();">
+        <p>Modificar titulo de la oferta: <input required="required"   name="titulom" id="titulom" minlength="4" maxlength="225" type="text" /> </p>
+        <p>Modificar salario: <input required="required"     id="salariom"  name="salariom" min="0" max="99999" type="number" /> </p>
+        <p>Modificar ubicación: <input required="required" name="ubicacionm"  minlength="4" maxlength="18"  id="ubicacionm"  type="text" /> </p>
+        <p>Modificar descripción: <textarea required="required" name="descripcionm"  id="descripcionm" minlength="4" maxlength="28"  type="text" ></textarea></p>
+        <p>Modificar fecha límite: <input required="required"  id="dateLimitm" name="dateLimitm" max="2022-12-31" type="date"/></p>
+        <p>Modificar la visualización: <input name="visibilidadm" id="visibilidadm"  type="checkbox"/> </p>
+        <input type="submit"/>
+    </form>
+</div>
+
+
+
+
+<div id="addOferta">
+    <h3 align="center">Añadir oferta nueva</h3>
+    <form id="oferta" name="oferta" action="javascript:addO();">
+                <p>Titulo de la oferta: <input required="required"  minlength="4" maxlength="25"  name="titulo"  id="titulo" type="text" ></p>
+                <p>Salario: <input required="required"  id="salario"  name="salario" min="0" max="999999" type="number"  ></p>
+                <p>Provincia: <input required="required"  name="ubicacion" minlength="4" maxlength="18" id="ubicacion"  type="text" ></p>
+                 <p>Descripción: <textarea required="required"  name="descripcion"  minlength="4" maxlength="28" id="descripcion"  type="text" ></textarea></p>
+                <p>Fecha límite para la inscripción: <input required="required"   id="dateLimit" name="dateLimit"  min="2020-03-26"  max="2021-12-31" type="date"></p>
+                <p>Selecciona este campo si desea que sea visible para los demandantes: <input name="visibilidad" id="visibilidad"  type="checkbox"></p>
+        <input type="submit"/>
+    </form>
+</div>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Ficha oferta</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    <p>Desarrollado por Lara Sánchez e Iván Conde (GII Móstoles)</p>
+</div>
+
+
+
+
+</body>
+</html>

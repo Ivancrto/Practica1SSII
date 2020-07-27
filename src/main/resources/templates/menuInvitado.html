@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workglee</title>
+    <link rel="stylesheet" type="text/css" href="styleEmpleado.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script language="JavaScript">
+
+     function getOfertas() {
+
+            var url = window.location.href;
+            var url = new URL(url);
+            // var c = url.searchParams.get("compy_id");
+            $.ajax({
+                url: "http://localhost:8080/ofertas"
+
+            }).then(function(data) {
+
+                $('#result').empty();
+                $.each(data._embedded.ofertas, function (index, value) {
+
+                       if(value['visibilidad'] == 1){
+                          var urlO = value['_links']['self'].href;
+                          var n = urlO[urlO.length -1];
+                          $('#result').append('<tr><td>'+value['titulo']+ '</td><td>'+value['_embedded']['company'].nameCompany +'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+'</td><td>'+value['descripcion']+
+                          '</td><td>'+value['dateLimit'].slice(0,10)+'</td><td><button><a href="login">Iniciar sesion</a></button></td></tr>' );
+                        }
+                });
+            });
+        }
+
+
+
+
+    function getOfertasByUbicacion() {
+            var ubicacion = $('#ubicacion-form').val();
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findByUbicacion?ubicacion="+ubicacion
+            }).then(function(data) {
+
+                $('#result').empty();
+                $.each(data._embedded.ofertas, function (index, value) {
+                if(value['visibilidad'] == 1){
+                          var urlO = value['_links']['self'].href;
+                          var n = urlO[urlO.length -1];
+                          $('#result').append('<tr><td>'+value['titulo']+'</td><td>'+value['_embedded']['company'].nameCompany +'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+
+                          '</td><td>'+value['descripcion']+
+                          '</td><td>'+value['dateLimit'].slice(0,10)+'</td><td><button ><a href="login">Iniciar sesion</a></button></td></tr>' );
+                          };
+
+
+                });
+            });
+    }
+
+
+    function getOfertasByTitulo() {
+            var titulo = $('#titulo-form').val();
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findByTitulo?titulo="+titulo
+            }).then(function(data) {
+
+                $('#result').empty();
+                $.each(data._embedded.ofertas, function (index, value) {
+                if(value['visibilidad'] == 1){
+                          var urlO = value['_links']['self'].href;
+                          var n = urlO[urlO.length -1];
+                          $('#result').append('<tr><td>'+value['titulo']+'</td><td>'+value['_embedded']['company'].nameCompany +'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+
+                          '</td><td>'+value['descripcion']+
+                          '</td><td>'+value['dateLimit'].slice(0,10)+'</td><td><button><a href="login">Iniciar sesion</a></button></td></tr>' );
+                          };
+
+
+                });
+            });
+    }
+
+
+    function getOfertasBySalario() {
+                var salario = $('#salario-form').val();
+                $.ajax({
+                    url: "http://localhost:8080/ofertas/search/findBySalario?salario="+salario
+                }).then(function(data) {
+
+                    $('#result').empty();
+                    $.each(data._embedded.ofertas, function (index, value) {
+                    if(value['visibilidad'] == 1){
+                              var urlO = value['_links']['self'].href;
+                              var n = urlO[urlO.length -1];
+                              $('#result').append('<tr><td>'+value['titulo']+'</td><td>'+value['_embedded']['company'].nameCompany +'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+
+                              '</td><td>'+value['descripcion']+'<td>'+value['dateLimit'].slice(0,10)+'</td><td><button><a href="login">Iniciar sesion</a></button></td></tr>' );
+                              };
+
+
+                    });
+                });
+     }
+
+    function getOfertasByFreeText() {
+                var freetext = $('#freetext-form').val();
+                $.ajax({
+                    url: "http://localhost:8080/ofertas/search/findByText?text="+freetext
+                }).then(function(data) {
+
+                    $('#result').empty();
+                    $.each(data._embedded.ofertas, function (index, value) {
+                    if(value['visibilidad'] == 1){
+                              var urlO = value['_links']['self'].href;
+                              var n = urlO[urlO.length -1];
+                              $('#result').append('<tr><td>'+value['titulo']+'</td><td>'+value['_embedded']['company'].nameCompany +'</td><td>'+value['salario']+'</td><td>'+value['ubicacion']+
+                              '</td><td>'+value['descripcion']+'</td><td>'+value['dateLimit'].slice(0,10)+'</td><td><button><a href="login">Iniciar sesion</a></button></td></tr>' );
+                              };
+
+                    });
+                });
+     }
+
+
+
+
+    function myFunction() {
+      var dots = document.getElementById("dots");
+      var moreText = document.getElementById("more");
+      var btnText = document.getElementById("myBtn");
+
+      if (dots.style.display === "none") {
+        dots.style.display = "inline";
+        btnText.innerHTML = "Ver más opciones de búsqueda";
+        moreText.style.display = "none";
+      } else {
+        dots.style.display = "none";
+        btnText.innerHTML = "Ver menos opciones de búsqueda";
+        moreText.style.display = "inline";
+      }
+    }
+
+    function sortTable(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("todasOfertasTable");
+      switching = true;
+      // Set the sorting direction to ascending:
+      dir = "asc";
+      /* Make a loop that will continue until
+      no switching has been done: */
+      while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+          // Start by saying there should be no switching:
+          shouldSwitch = false;
+          /* Get the two elements you want to compare,
+          one from current row and one from the next: */
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          /* Check if the two rows should switch place,
+          based on the direction, asc or desc: */
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          /* If a switch has been marked, make the switch
+          and mark that a switch has been done: */
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          // Each time a switch is done, increase this count by 1:
+          switchcount ++;
+        } else {
+          /* If no switching has been done AND the direction is "asc",
+          set the direction to "desc" and run the while loop again. */
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+    </script>
+
+
+
+
+</head>
+<body>
+
+
+<div class="topnav">
+    <a href="#">Work-Glee</a>
+    <a id="bienvenido" href="login">Iniciar sesión</a>
+</div>
+
+<div class="content">
+
+    <div class="search">
+
+        <div id="botonesBusqueda">
+
+            <a id="ver" href="javascript:getOfertas();" title="Ver todas">Ver todas las ofertas disponibles</a>
+            <a href="javascript:myFunction()" id="myBtn">Ver más opciones de búsqueda</a>
+            <span id="dots"></span>
+
+        </div>
+
+        <div id="more" style="display:none;">
+
+
+            <form id="BPT" action="javascript:getOfertasByTitulo();">
+                Buscar por titulo:&nbsp;<input id='titulo-form' type='text' placeholder="Ej: Analista, Junior Developer..."/>
+                <input id="b1" type="submit" value="Buscar"/>
+            </form>
+
+
+            <form id="BPS"  action="javascript:getOfertasBySalario();">
+                Buscar por salario:&nbsp;<input id='salario-form' type='text' placeholder="Ej: 5000, 9000..."/>
+                <input  id="b2" type="submit" value="Buscar"/>
+            </form>
+
+            <form id="BPU" action="javascript:getOfertasByUbicacion();">
+                Buscar por ubicacion:&nbsp;<input id='ubicacion-form' type='text' placeholder="Ej: Madrid, Barcelona..."/>
+                <input  id="b3" type="submit" value="Buscar"/>
+            </form>
+
+            <form id="BPFT" action="javascript:getOfertasByFreeText();">
+                Buscar por texto libre:&nbsp;<input id='freetext-form' type='text' placeholder="Ej: Madrid, 9000, IA..."/>
+                <input  id="b4" type="submit" value="Buscar"/>
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div id="todasOfertas">
+
+        <table id="todasOfertasTable">
+            <tr>
+                <th onclick="sortTable(0)">Titulo</th>
+                <th onclick="sortTable(1)">Compañia</th>
+                <th onclick="sortTable(2)">Salario</th>
+                <th onclick="sortTable(3)">Ubicacion</th>
+                <th onclick="sortTable(4)">Descripcion</th>
+                <th onclick="sortTable(5)">Fecha Limite</th>
+                <th onclick="login">Inscribirse</th>
+            </tr>
+
+            <tbody id="result">
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+</div>
+
+
+<div class="footer">
+    <p>Desarrollado por Lara Sánchez e Iván Conde (GII Móstoles)</p>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Workglee</title>
+
+    <link rel="stylesheet" type="text/css" href="styleCRM.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    <script language="JavaScript">
+
+        function getOfertasVacias() {
+
+
+            var url = window.location.href;
+            var url = new URL(url);
+
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findVacias"
+
+            }).then(function(data) {
+
+                $('#result').empty();
+                $.each(data, function (index, value) {
+
+                          $('#result').append('<tr><td>'+value[0]+'</td><td>'+value[1]+'</td><td><button id='+value[2]+' onclick="addtexto()"  data-toggle="modal" data-target="#myModal">Ver oferta</button></td></tr>' );
+
+                });
+            });
+        }
+
+
+        function getOfertasDemanda() {
+
+
+            var url = window.location.href;
+            var url = new URL(url);
+
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findQ2"
+
+            }).then(function(data) {
+
+                $('#result2').empty();
+                $.each(data, function (index, value) {
+                 if(value[2]==null){
+                          $('#result2').append('<tr><td>'+value[0]+'</td><td>'+value[1]+'</td><td>0</td><td><button  id='+value[3]+' onclick="addtexto()" data-toggle="modal" data-target="#myModal">Ver oferta</button></td></tr>' );
+
+                }else{
+                          $('#result2').append('<tr><td>'+value[0]+'</td><td>'+value[1]+'</td><td>'+value[2]+'</td><td><button id='+value[3]+' onclick="addtexto()"  btn-lg" data-toggle="modal" data-target="#myModal">Ver oferta</button></td></tr>' );
+                    }
+                });
+            });
+        }
+
+        function addtexto() {
+
+            var n = event.srcElement.id;
+           $.ajax({
+                 url: 'http://localhost:8080/ofertas/' + n,
+            }).then(function(data) {
+
+                $("#myModal .modal-body").text("Titulo: " +data.titulo+ " Salario: "+ data.salario + " Ubicacion: "+ data.ubicacion+ " Descripcion: " +
+                data.descripcion+ " Fecha limite: " + data.dateLimit.slice(0,10) + " Visibilidad: " + data.visibilidad);
+            });
+
+
+
+        }
+
+
+        function getOfertasProvincia() {
+
+
+            var url = window.location.href;
+            var url = new URL(url);
+
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findQ3"
+
+            }).then(function(data) {
+
+                $('#result3').empty();
+                $.each(data, function (index, value) {
+
+                          $('#result3').append('<tr><td>'+value[1]+'</td><td>'+value[0]+'</td></tr>' );
+
+                });
+            });
+        }
+
+
+        function getofertasDemandantes() {
+
+
+            var url = window.location.href;
+            var url = new URL(url);
+
+            $.ajax({
+                url: "http://localhost:8080/ofertas/search/findQ4"
+
+            }).then(function(data) {
+
+                $('#result4').empty();
+                $.each(data, function (index, value) {
+                    if(value[4]==null){
+                       $('#result4').append('<tr><td>'+value[0]+'</td><td>'+value[1]+'</td><td>'+value[2]+'</td><td>'+value[3]+'</td><td>0</td></tr>');
+                    }else{
+                    $('#result4').append('<tr><td>'+value[0]+'</td><td>'+value[1]+'</td><td>'+value[2]+'</td><td>'+value[3]+'</td><td>'+value[4]+'</td></tr>');
+                    }
+                });
+            });
+        }
+
+
+
+    </script>
+
+
+
+
+</head>
+<body>
+
+<div class="topnav">
+    <a href="#">Inicio</a>
+    <a href="#">Ajustes</a>
+    <a id="bienvenido">Administrador</a>
+</div>
+
+<div class="content">
+
+<div id="ofertasVacias">
+
+
+    <div id="botonesBusqueda">
+        <a id="ver" href="javascript:getOfertasVacias();" title="Sin inscripciones">Ofertas sin inscripciones</a>
+    </div>
+
+    <table id="todasOfertasTable">
+        <thead>
+        <th>Titulo</th>
+        <th>Nombre de la compañía</th>
+        <th>Ficha de la oferta</th>
+        </thead>
+        <tbody id="result">
+        </tbody>
+    </table>
+
+
+</div>
+
+    <hr class="new1">
+
+<div id="ofertasDemanda">
+
+    <div id="botonesBusqueda2">
+        <a href="javascript:getOfertasDemanda();">Ofertas según demanda</a>
+    </div>
+
+
+    <table id="todasOfertasTable2">
+        <thead>
+        <th>Nombre de la compañía</th>
+        <th>Titulo de la oferta</th>
+        <th>Numero de demandantes</th>
+        <th>Ficha de la oferta</th>
+        </thead>
+        <tbody id="result2">
+        </tbody>
+    </table>
+
+</div>
+
+    <hr class="new1">
+
+
+<div id="ofertasProvincia">
+
+    <div id="botonesBusqueda3">
+        <a href="javascript:getOfertasProvincia();">Ofertas por ubicación</a>
+    </div>
+
+    <table id="todasOfertasTable3">
+        <thead>
+        <th>Provincia de la oferta</th>
+        <th>Salario medio de las ofertas</th>
+        </thead>
+        <tbody id="result3">
+        </tbody>
+    </table>
+
+</div>
+
+    <hr class="new1">
+
+
+<div id="ofertasDemandantes">
+
+    <div id="botonesBusqueda4">
+        <a href="javascript:getofertasDemandantes();">Ofertas inscritas por demandantes</a>
+    </div>
+
+
+    <table id="todasOfertasTable4">
+        <thead>
+        <th>Nombre del demandante</th>
+        <th>Apellido del demandante</th>
+        <th>Ciudad del demandante</th>
+        <th>Provincia del demandante</th>
+        <th>Numero de ofertas inscrito</th>
+        </thead>
+        <tbody id="result4">
+        </tbody>
+    </table>
+
+
+</div>
+
+    <hr class="new1">
+
+</div>
+
+
+
+<div class="container">
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Ficha oferta</h4>
+                </div>
+                <div class="modal-body">
+                    <p id ="ficha" name="ficha"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

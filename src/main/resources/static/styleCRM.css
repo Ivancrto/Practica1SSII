@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.content {
+  padding: 10px;
+
+}
+
+/* ---------- BARRA DE NAVEGACION -------------- */
+
+.topnav{
+  overflow: hidden;
+  background-color: #1b262c;
+}
+.topnav a {
+  float: left;
+  display: block;
+  color: #ffa372;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.topnav a:hover {
+  background-color: #ffd5bf;
+  color: #55788a;
+}
+
+#bienvenido {
+    float: right;
+  cursor: pointer;
+}
+/* ---------- BARRA DE NAVEGACION -------------- */
+
+
+/* ----------------- BOTONES DE VER TODAS Y VER MÁS OPCIONES ------------------ */
+
+#botonesBusqueda, #botonesBusqueda2, #botonesBusqueda3, #botonesBusqueda4{
+  overflow: hidden;
+  background-color: #1b262c;
+}
+
+#botonesBusqueda a, #botonesBusqueda2 a,#botonesBusqueda3 a,#botonesBusqueda4 a{
+  float: center;
+  display: block;
+  color: #ffa372;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+#botonesBusqueda a:hover, #botonesBusqueda2 a:hover, #botonesBusqueda3 a:hover, #botonesBusqueda4 a:hover{
+  background-color: #ffd5bf;
+  color: #55788a;
+}
+
+
+/* ----------------- BOTONES DE VER TODAS Y VER MÁS OPCIONES ------------------ */
+
+
+
+
+
+/* ----------- FORMATO DE LA TABLA -------------------- */
+#todasOfertasTable, #todasOfertasTable2, #todasOfertasTable3, #todasOfertasTable4  {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+}
+
+#todasOfertasTable td, #todasOfertasTable th,  #todasOfertasTable2 td, #todasOfertasTable2 th, #todasOfertasTable3 td, #todasOfertasTable3 th, #todasOfertasTable4 td, #todasOfertasTable4 th{
+  /* border: 1px solid #ddd; */
+  padding: 8px;
+}
+
+#todasOfertasTable tr:nth-child(even), #todasOfertasTable2 tr:nth-child(even), #todasOfertasTable3 tr:nth-child(even), #todasOfertasTable4 tr:nth-child(even){
+background-color: #ffd5bf;}
+
+#todasOfertasTable tr:hover, #todasOfertasTable2 tr:hover, #todasOfertasTable3 tr:hover, #todasOfertasTable4 tr:hover {background-color: #384f5b; color: #ffa372;}
+
+#todasOfertasTable th, #todasOfertasTable2 th, #todasOfertasTable3 th, #todasOfertasTable4 th {
+  margin-top: 5px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #1b262c;
+  color: #ffa372;
+  text-decoration: underline
+  cursor: pointer;
+  /*color: white;*/
+}
+
+/* ----------- FORMATO DE LA TABLA -------------------- */
+
+
+#ofertasDemandantes, #ofertasProvincia, #ofertasDemanda, #ofertasVacias  {
+  margin: 10px;
+  padding: 10px;
+}
+
+
+hr.new1 {
+  border: 10px #C9D7DE;
+}
+
+.footer {
+    position:fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #ffd5bf;
+   color: black;
+   text-align: center;
+   font-size: 9px;
+
+}

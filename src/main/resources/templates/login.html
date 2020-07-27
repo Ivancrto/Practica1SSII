@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <link rel="stylesheet" type="text/css" href="styleLogin.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        function mostrarReferencia(){
+        if (document.registrar.r1[0].checked == true) {
+             document.getElementById('des2').style.display='block';
+             document.getElementById('des1').style.display='none';
+
+        }else if (document.registrar.r1[1].checked == true){
+             document.getElementById('des1').style.display='block';
+             document.getElementById('des2').style.display='none';
+        }
+        }
+    </script>
+
+    <script language="JavaScript">
+
+         function addUser() {
+
+            var formData = {};
+            formData['nombre'] = $('#nombre').val();
+            formData['apellidos'] = $('#apellidos').val();
+            formData['email'] = $('#email').val();
+            formData['contraseña'] = $('#contraseña').val();
+            formData['ciudad'] = $('#ciudad').val();
+            formData['provincia'] = $('#provincia').val();
+            correo =  $('#email').val();
+            nacimiento
+             if (document.registrar.r1[0].checked == true) {
+                formData['perfil'] = 'USER';
+                formData['nacimiento'] = $('#nacimiento').val();
+             }else if (document.registrar.r1[1].checked == true){
+                 formData['perfil'] = 'COMPANY';
+                 formData['nameCompany'] = $('#compañia').val();
+                 formData['descripcion'] = $('#descripcion').val();
+
+             }
+
+            if (document.registrar.r1[0].checked == true) {
+            // Para el director hay que enviar la URI completa al objeto existente:
+             //formData['empleados'] = 'http://localhost:8080/empleados/'+$('#empleados').val();
+            $.ajax({
+                type: "POST",
+                url: 'http://localhost:8080/empleados/',
+                dataType: 'json',
+                async: false,
+                // El objeto hay que convertirlo a texto
+                data: JSON.stringify(formData),
+                contentType: 'application/json'
+
+            });
+                location.href = "menuE?compy_id=1";}
+              else{
+               $.ajax({
+                type: "POST",
+                url: 'http://localhost:8080/companies/',
+                dataType: 'json',
+                async: false,
+                // El objeto hay que convertirlo a texto
+                data: JSON.stringify(formData),
+                contentType: 'application/json'
+
+            });
+              location.href = "menuC?compy_id=2" ; }
+
+
+        }
+
+
+
+        function iniciarUser() {
+//EMPLEADO
+           var email = $('#emailr').val();
+           var url = "null";
+              $.ajax({
+                url: "http://localhost:8080/empleados/search/findByEmail?email="+email
+            }).then(function(data) {
+                if($('#password1').val()==data.contraseña){
+                url  = data._links.self.href
+                var n =  url.substr(url.length -2);
+                location.href = "menuE?compy_id=" + n;}
+
+            });
+    if(url=="null"){
+             document.getElementById('me').style.display='block';
+             }
+        }
+
+
+
+          function iniciarUser2() {
+//EMPLEADO
+           var email = $('#emailr2').val();
+           var url = "null";
+              $.ajax({
+                url: "http://localhost:8080/companies/search/findByEmail?email="+email
+            }).then(function(data) {
+                if($('#password2').val()==data.contraseña){
+
+                url  = data._links.self.href
+
+                  var n = url[url.length -1];
+                  if(url[url.length-3] == "/"){
+                   n = url.substr(url.length -2)
+                      }
+
+
+                location.href = "menuC?compy_id=" + n;}
+
+            });
+            if(url=="null"){
+             document.getElementById('me').style.display='block';
+             }
+        }
+
+
+
+
+
+
+        function iniciarUser3() {
+//ADMIN
+           var email = $('#emailr3').val();
+              $.ajax({
+                url: "http://localhost:8080/adminis/search/findByEmail?email="+email
+            }).then(function(data) {
+                if($('#password3').val()==data.contraseña){
+                var url  = data._links.self.href
+                var n = url[url.length -1];
+                location.href = "menuA";}
+            });
+
+
+        }
+
+
+        function mostrar(){
+            if (document.re.r2[0].checked == true) {
+                 document.getElementById('l2').style.display='none';
+                 document.getElementById('l3').style.display='none';
+                 document.getElementById('l1').style.display='block';
+
+            }else if (document.re.r2[1].checked == true){
+                 document.getElementById('l1').style.display='none';
+                 document.getElementById('l3').style.display='none';
+                 document.getElementById('l2').style.display='block';
+            }else if (document.re.r2[2].checked == true){
+                 document.getElementById('l1').style.display='none';
+                 document.getElementById('l2').style.display='none';
+                 document.getElementById('l3').style.display='block';
+            }
+        }
+
+
+
+    </script>
+
+</head>
+<body>
+<div class="topnav">
+    <a id="bienvenido">Bienvenido a Work-Glee</a>
+</div>
+
+
+<div class="content">
+
+
+<div id="sign_in">
+    <h3 align="center">Sign In | Iniciar sesión</h3>
+    <div id="l1" >
+        <h4 align="center">Iniciando como: Empleado</h4>
+
+    <form id="iniciar1" name="iniciar" action="javascript:iniciarUser();">
+        <p>Email <input name="emailr" id="emailr" type="text"/></p>
+        <p>Password <input name="password" id="password1" type="password"/></p>
+        <input type="submit" value="Enviar"/>
+    </form>
+
+    </div>
+
+    <div id="l2" style="display:none;">
+        <h4 align="center">Iniciando como: Compañia</h4>
+
+    <form id="iniciar2"  name="iniciar"  action="javascript:iniciarUser2();">
+        <p>Email <input name="emailr2" id="emailr2" type="text"/></p>
+        <p>Password <input name="password2" id="password2" type="password"/></p>
+        <input type="submit" value="Enviar"/>
+
+    </form>
+    </div>
+
+        <div id="l3" style="display:none;">
+            <h4 align="center">Iniciando como: Administrado</h4>
+    <form id="iniciar3" name="iniciar" action="javascript:iniciarUser3();">
+        <p>Email <input name="emailr3" id="emailr3" type="text"/></p>
+        <p>Password <input name="password3" id="password3" type="password"/></p>
+        <input type="submit" value="Enviar"/>
+    </form>
+        </div>
+
+    <form id="re" name="re" >
+    Buscador <input type="radio" checked  name="r2" value="Buscador" id="p1" onclick="mostrar();" />
+    Empresa <input type="radio" name="r2" value="Empresa"  id="p2" onclick="mostrar();" />
+    Administrador <input type="radio" name="r2" value="Administrador"  id="p3" onclick="mostrar();" />
+    </form>
+
+
+    <p id="me"  name="me"  style="display:none;color:red;font-size:14px;" align="center" >Correo o Contraseña incorrecta</p>
+
+</div>
+
+    <div id="botonesBusqueda">
+        <a id="ver" href="menuI" title="Ver todas">Acceder como invitado</a>
+    </div>
+
+
+<div id="sign_up" style="display:none;">
+    <h2>SIGN UP, ESTO SE VA A BORRAR NO???</h2>
+    <form id="registrar" name="registrar" action="javascript:addUser();">
+        <p>Nombre <input name="Nombre" id="nombre" type="text"/></p>
+        <p>Apellidos <input name="apellidos" id="apellidos" type="text"/></p>
+        <p>Email <input name="Email" id="email" type="text"/></p>
+        <p>Password <input name="Contraseña" id="contraseña" type="text"/></p>
+        <p>Ciudad: <input type="text" name="Ciudad" id="ciudad" class="input" /></p>
+        <p>Provincia: <input type="text" name="Provincia" id="provincia" class="input" /></p>
+        <p>Tipo:
+            Buscador <input type="radio"  name="r1" value="Buscador" id="Conocido_0" onclick="mostrarReferencia();" />
+            Empresa <input type="radio" name="r1" value="Empresa"  id="Conocido_1" onclick="mostrarReferencia();" />
+        </p>
+
+        <div id="des1" style="display:none;">
+            <p>Compañia: <input type="text" name="Compañia" id="compañia" class="input" /></p>
+            <p>Descripcion: <input type="text" name="Descripcion" id="descripcion" class="input" /></p>
+
+        </div>
+        <div id="des2" style="display:none;">
+            <p>Fecha nacimiento: <input type="date" name="nacimiento" id="nacimiento" class="input" /></p>
+        </div>
+        <input type="submit"/>
+    </form>
+</div>
+
+</div>
+
+<div class="footer">
+    <p>Desarrollado por Lara Sánchez e Iván Conde (GII Móstoles)</p>
+</div>
+
+
+</body>
+</html>
